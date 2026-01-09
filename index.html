@@ -1,149 +1,347 @@
 <!doctype html>
-<html lang="zh-Hans">
+<html lang="zh-Hant">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Infinity 作业计算器 (D2R)</title>
+  <title>Infinity 作業計算器 (D2R)</title>
   <style>
     :root { --bg:#0b0d10; --card:#12161c; --text:#e7eef7; --muted:#9db0c6; --line:#223041; --accent:#7bdcff; }
     body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:var(--bg); color:var(--text); }
-    .wrap { max-width: 860px; margin: 0 auto; padding: 22px 16px 40px; }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 22px 16px 40px; }
     h1 { margin: 6px 0 6px; font-size: 22px; }
-    .sub { color:var(--muted); margin: 0 0 16px; line-height: 1.55; }
+    .sub { color:var(--muted); margin: 0 0 16px; line-height: 1.55; white-space: pre-line; }
     .grid { display:grid; grid-template-columns: 1fr; gap: 12px; }
-    @media (min-width: 820px){ .grid { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 860px){ .grid { grid-template-columns: 1fr 1fr; } }
     .card { background:var(--card); border:1px solid var(--line); border-radius: 14px; padding: 14px; }
     .card h2 { margin: 0 0 10px; font-size: 15px; color: var(--accent); font-weight: 650; }
     .row { display:flex; gap:10px; align-items:center; margin: 10px 0; }
     label { flex: 1; color:var(--muted); font-size: 13px; }
-    input { width: 140px; padding: 10px 10px; border-radius: 10px; border: 1px solid var(--line); background:#0f1318; color:var(--text); font-size: 14px; }
-    .btn { width: 100%; padding: 12px 14px; border: 0; border-radius: 12px; background: var(--accent); color:#05202a; font-weight: 800; cursor:pointer; margin-top: 6px; }
-    .outBig { font-size: 34px; font-weight: 900; margin: 6px 0 2px; }
-    .tiny { color:var(--muted); font-size: 12px; line-height: 1.55; }
+    input { width: 160px; padding: 10px 10px; border-radius: 10px; border: 1px solid var(--line); background:#0f1318; color:var(--text); font-size: 14px; }
+    select { padding:10px; border-radius:10px; background:#0f1318; color:var(--text); border:1px solid var(--line); }
+    .btn { width: 100%; padding: 12px 14px; border: 0; border-radius: 12px; background: var(--accent); color:#05202a; font-weight: 900; cursor:pointer; margin-top: 6px; }
+    .outBig { font-size: 34px; font-weight: 950; margin: 6px 0 2px; }
+    .tiny { color:var(--muted); font-size: 12px; line-height: 1.55; white-space: pre-line; }
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
     .hr { height:1px; background:var(--line); margin: 10px 0; border:0; }
     details { border: 1px solid var(--line); border-radius: 12px; padding: 10px 10px; background: #0f1318; }
-    summary { cursor: pointer; color: var(--text); font-weight: 650; list-style: none; }
+    summary { cursor: pointer; color: var(--text); font-weight: 700; list-style: none; }
     summary::-webkit-details-marker { display:none; }
     .summaryHint { color: var(--muted); font-weight: 500; margin-left: 8px; font-size: 12px; }
     .pill { display:inline-block; padding: 2px 8px; border:1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: 12px; }
+    .topbar { display:flex; gap:10px; align-items:center; justify-content:space-between; margin: 8px 0 12px; }
+    .langbox { display:flex; gap:10px; align-items:center; }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>Infinity 作业计算器 (D2R)</h1>
-    <p class="sub">
-      只填几个数字，直接给你<strong>多少天</strong>拿到 Infinity（按钥匙路线的模型）。<br/>
-      内置假设：TKey=1/14，HKey≈DKey≈1/10.5，1 key = 1/3 Ist，Mal≈0.5 Ist。
-    </p>
+    <div class="topbar">
+      <div>
+        <h1 data-i18n="title">Infinity 作業計算器 (D2R)</h1>
+        <p class="sub" data-i18n="subtitle"></p>
+      </div>
+      <div class="langbox">
+        <span class="pill" data-i18n="ui.langLabel">語言</span>
+        <select id="langSel" aria-label="Language">
+          <option value="zh-Hant">繁體</option>
+          <option value="zh-Hans">简体</option>
+          <option value="en">EN</option>
+        </select>
+      </div>
+    </div>
 
     <div class="grid">
       <!-- INPUTS -->
       <div class="card">
-        <h2>输入</h2>
+        <h2 data-i18n="inputs.title">輸入</h2>
 
         <div class="row">
-          <label>每天玩几小时 <span class="pill">hours/day</span></label>
+          <label data-i18n="inputs.hpd">每天玩幾小時</label>
           <input id="hpd" type="number" step="0.5" value="4">
         </div>
 
         <hr class="hr"/>
 
         <div class="row">
-          <label>Countess 用时 <span class="pill">min/run</span></label>
+          <label><span data-i18n="inputs.countess">Countess 用時</span> <span class="pill">min/run</span></label>
           <input id="tC" type="number" step="0.1" value="2">
         </div>
 
         <div class="row">
-          <label>Summoner 用时 <span class="pill">min/run</span></label>
+          <label><span data-i18n="inputs.summoner">Summoner 用時</span> <span class="pill">min/run</span></label>
           <input id="tS" type="number" step="0.1" value="2">
         </div>
 
         <div class="row">
-          <label>Nihlathak 用时 <span class="pill">min/run</span></label>
+          <label><span data-i18n="inputs.nihl">Nihlathak 用時</span> <span class="pill">min/run</span></label>
           <input id="tN" type="number" step="0.1" value="2">
         </div>
 
         <details style="margin-top:12px;">
-          <summary>高级设置：符文价格 <span class="summaryHint">(默认收起，想改再点)</span></summary>
+          <summary>
+            <span data-i18n="advanced.prices">高級設定：符文價格</span>
+            <span class="summaryHint" data-i18n="advanced.hint">(預設收起，要改再點)</span>
+          </summary>
           <div style="margin-top:10px;">
             <div class="row">
-              <label>Ber 价格（Ist）</label>
+              <label data-i18n="advanced.ber">Ber 價格（Ist）</label>
               <input id="ber" type="number" step="0.1" value="20">
             </div>
             <div class="row">
-              <label>Jah 价格（Ist）</label>
+              <label data-i18n="advanced.jah">Jah 價格（Ist）</label>
               <input id="jah" type="number" step="0.1" value="24">
             </div>
             <div class="row">
-              <label>Mal 价格（Ist）</label>
+              <label data-i18n="advanced.mal">Mal 價格（Ist）</label>
               <input id="mal" type="number" step="0.1" value="0.5">
             </div>
-            <p class="tiny">说明：Infinity = 2×Ber + Mal + Ist（这里默认 Mal=0.5，可按你当前市场改）。</p>
+            <p class="tiny" data-i18n="advanced.note"></p>
           </div>
         </details>
 
-        <button class="btn" id="calc">计算</button>
+        <button class="btn" id="calc" data-i18n="btn.calc">計算</button>
 
-        <p class="tiny">
-          Tip：用<strong>可持续</strong>的平均速度（比如2.0）。冲刺速度（1.5）能做到但很难长期保持。
-        </p>
+        <p class="tiny" data-i18n="tip"></p>
       </div>
 
       <!-- OUTPUTS -->
       <div class="card">
-        <h2>结果（以“成品”为中心）</h2>
+        <h2 data-i18n="outputs.title">結果（以成品為中心）</h2>
 
-        <div class="tiny">Infinity 预计需要</div>
-        <div class="outBig"><span id="dinfty">—</span> <span class="tiny">天</span></div>
-        <div class="tiny">≈ <span id="hinfty">—</span> 小时（按 <span id="hpdShow">—</span> 小时/天）</div>
+        <div class="tiny" data-i18n="outputs.infNeeds">Infinity 需要</div>
+        <div class="outBig"><span id="dinfty">—</span> <span class="tiny" data-i18n="unit.days">天</span></div>
+        <div class="tiny" id="hoursLine">—</div>
 
         <hr class="hr"/>
 
-        <div class="tiny">参考（不抢主输出）</div>
+        <div class="tiny" data-i18n="outputs.refTitle">參考（次要資訊）</div>
         <div class="tiny mono" id="incomeLine">—</div>
 
         <details style="margin-top:12px;">
-          <summary>更多拆解（Ber / Jah）</summary>
+          <summary data-i18n="outputs.more">更多拆解（Ber / Jah）</summary>
           <div style="margin-top:10px;">
             <div class="row">
-              <label>1 Ber</label>
-              <div class="mono" style="width:180px; text-align:right;">
-                <span id="dber">—</span> 天
-                <span class="tiny">（≈<span id="hber">—</span>小时）</span>
+              <label data-i18n="outputs.ber">1 Ber</label>
+              <div class="mono" style="width:220px; text-align:right;">
+                <span id="dber">—</span> <span data-i18n="unit.days">天</span>
+                <span class="tiny">（≈<span id="hber">—</span> <span data-i18n="unit.hours">小時</span>）</span>
               </div>
             </div>
             <div class="row">
-              <label>1 Jah</label>
-              <div class="mono" style="width:180px; text-align:right;">
-                <span id="djah">—</span> 天
-                <span class="tiny">（≈<span id="hjah">—</span>小时）</span>
+              <label data-i18n="outputs.jah">1 Jah</label>
+              <div class="mono" style="width:220px; text-align:right;">
+                <span id="djah">—</span> <span data-i18n="unit.days">天</span>
+                <span class="tiny">（≈<span id="hjah">—</span> <span data-i18n="unit.hours">小時</span>）</span>
               </div>
             </div>
           </div>
         </details>
 
-        <p class="tiny" style="margin-top:10px;">
-          你可以把这个当“作业计划”：每天完成多少小时，就稳稳推进。
-        </p>
+        <p class="tiny" data-i18n="outputs.footer"></p>
       </div>
 
       <!-- NOTES -->
       <div class="card" style="grid-column: 1 / -1;">
-        <h2>备注</h2>
-        <ul class="tiny">
-          <li>这个工具刻意用<strong>天</strong>来表达，避免“跑多少把”吓跑人。</li>
-          <li>核心输入只有：Ber/Jah 价格 + 三段路平均用时 + 每天玩几小时。</li>
-          <li>模型是“钥匙路线”的计划工具：越稳定、越可持续越准。</li>
-        </ul>
+        <h2 data-i18n="notes.title">備註</h2>
+        <ul class="tiny" id="notesList"></ul>
       </div>
     </div>
   </div>
 
   <script>
+    // ---------------------------
+    // i18n
+    // ---------------------------
+    const I18N = {
+      "zh-Hant": {
+        title: "Infinity 作業計算器 (D2R)",
+        subtitle:
+`只填幾個數字，直接給你「多少天」拿到 Infinity（鑰匙路線模型）。
+內建假設：TKey=1/14，HKey≈DKey≈1/10.5，1 key = 1/3 Ist，Mal≈0.5 Ist。`,
+        "ui.langLabel": "語言",
+
+        "inputs.title": "輸入",
+        "inputs.hpd": "每天玩幾小時  (hours/day)",
+        "inputs.countess": "Countess 用時",
+        "inputs.summoner": "Summoner 用時",
+        "inputs.nihl": "Nihlathak 用時",
+
+        "advanced.prices": "高級設定：符文價格",
+        "advanced.hint": "(預設收起，要改再點)",
+        "advanced.ber": "Ber 價格（Ist）",
+        "advanced.jah": "Jah 價格（Ist）",
+        "advanced.mal": "Mal 價格（Ist）",
+        "advanced.note": "說明：Infinity = 2×Ber + Mal + Ist（Mal 預設 0.5，可依市場調整）。",
+
+        "btn.calc": "計算",
+        tip: "Tip：用「可持續」的平均速度（例如 2.0）。衝刺速度（1.5）能做到，但很難長期保持。",
+
+        "outputs.title": "結果（以成品為中心）",
+        "outputs.infNeeds": "Infinity 需要",
+        "outputs.refTitle": "參考（次要資訊）",
+        "outputs.more": "更多拆解（Ber / Jah）",
+        "outputs.ber": "1 Ber",
+        "outputs.jah": "1 Jah",
+        "outputs.footer": "把它當作「作業計畫」：每天完成固定時數，就穩穩推進。",
+
+        "unit.days": "天",
+        "unit.hours": "小時",
+
+        "tpl.hoursLine": "≈ {H} 小時（按 {D} 小時/天）",
+        "tpl.incomeLine": "Ist/hour ≈ {IPH}   |   Keys/hour ≈ {KPH}   （C+S+N）",
+
+        "notes.title": "備註",
+        "notes.items": [
+          "本工具刻意用「天」呈現，避免用跑多少把嚇跑人。",
+          "核心輸入只有：Ber/Jah 價格 + 三段路平均用時 + 每天玩幾小時。",
+          "這是鑰匙路線的計畫工具：越穩定、越可持續越準。"
+        ]
+      },
+
+      "zh-Hans": {
+        title: "Infinity 作业计算器 (D2R)",
+        subtitle:
+`只填几个数字，直接给你「多少天」拿到 Infinity（钥匙路线模型）。
+内置假设：TKey=1/14，HKey≈DKey≈1/10.5，1 key = 1/3 Ist，Mal≈0.5 Ist。`,
+        "ui.langLabel": "语言",
+
+        "inputs.title": "输入",
+        "inputs.hpd": "每天玩几小时  (hours/day)",
+        "inputs.countess": "Countess 用时",
+        "inputs.summoner": "Summoner 用时",
+        "inputs.nihl": "Nihlathak 用时",
+
+        "advanced.prices": "高级设置：符文价格",
+        "advanced.hint": "(默认收起，要改再点)",
+        "advanced.ber": "Ber 价格（Ist）",
+        "advanced.jah": "Jah 价格（Ist）",
+        "advanced.mal": "Mal 价格（Ist）",
+        "advanced.note": "说明：Infinity = 2×Ber + Mal + Ist（Mal 默认 0.5，可按市场调整）。",
+
+        "btn.calc": "计算",
+        tip: "Tip：用「可持续」的平均速度（例如 2.0）。冲刺速度（1.5）能做到，但很难长期保持。",
+
+        "outputs.title": "结果（以成品为中心）",
+        "outputs.infNeeds": "Infinity 需要",
+        "outputs.refTitle": "参考（次要信息）",
+        "outputs.more": "更多拆解（Ber / Jah）",
+        "outputs.ber": "1 Ber",
+        "outputs.jah": "1 Jah",
+        "outputs.footer": "把它当作「作业计划」：每天完成固定时数，就稳稳推进。",
+
+        "unit.days": "天",
+        "unit.hours": "小时",
+
+        "tpl.hoursLine": "≈ {H} 小时（按 {D} 小时/天）",
+        "tpl.incomeLine": "Ist/hour ≈ {IPH}   |   Keys/hour ≈ {KPH}   （C+S+N）",
+
+        "notes.title": "备注",
+        "notes.items": [
+          "本工具刻意用「天」呈现，避免用跑多少把吓跑人。",
+          "核心输入只有：Ber/Jah 价格 + 三段路平均用时 + 每天玩几小时。",
+          "这是钥匙路线的计划工具：越稳定、越可持续越准。"
+        ]
+      },
+
+      en: {
+        title: "Infinity Homework Calculator (D2R)",
+        subtitle:
+`Fill a few numbers to get “days to Infinity” (keys pipeline model).
+Assumptions: TKey=1/14, HKey≈DKey≈1/10.5, 1 key = 1/3 Ist, Mal≈0.5 Ist.`,
+        "ui.langLabel": "Language",
+
+        "inputs.title": "Inputs",
+        "inputs.hpd": "Daily playtime (hours/day)",
+        "inputs.countess": "Countess time",
+        "inputs.summoner": "Summoner time",
+        "inputs.nihl": "Nihlathak time",
+
+        "advanced.prices": "Advanced: Rune prices",
+        "advanced.hint": "(collapsed by default)",
+        "advanced.ber": "Ber price (Ist)",
+        "advanced.jah": "Jah price (Ist)",
+        "advanced.mal": "Mal price (Ist)",
+        "advanced.note": "Note: Infinity = 2×Ber + Mal + Ist (Mal defaults to 0.5; adjust to your market).",
+
+        "btn.calc": "Calculate",
+        tip: "Tip: Use a sustainable average pace (e.g., 2.0). Peak pace (1.5) is achievable but hard to sustain.",
+
+        "outputs.title": "Outputs (final item first)",
+        "outputs.infNeeds": "Infinity needs",
+        "outputs.refTitle": "Reference (secondary)",
+        "outputs.more": "More breakdown (Ber / Jah)",
+        "outputs.ber": "1 Ber",
+        "outputs.jah": "1 Jah",
+        "outputs.footer": "Use this as a homework plan: steady daily hours = steady progress.",
+
+        "unit.days": "days",
+        "unit.hours": "hours",
+
+        "tpl.hoursLine": "≈ {H} hours (at {D} h/day)",
+        "tpl.incomeLine": "Ist/hour ≈ {IPH}   |   Keys/hour ≈ {KPH}   (C+S+N)",
+
+        "notes.title": "Notes",
+        "notes.items": [
+          "This tool shows days (not run counts) to keep it viewer-friendly.",
+          "Core inputs: Ber/Jah prices + average times for three routes + hours/day.",
+          "Keys-pipeline planning tool: more stable & sustainable = more accurate."
+        ]
+      }
+    };
+
+    function detectLang(){
+      const saved = localStorage.getItem("lang");
+      if (saved && I18N[saved]) return saved;
+
+      const nav = (navigator.language || "").toLowerCase();
+      const nav2 = (navigator.languages && navigator.languages[0]) ? navigator.languages[0].toLowerCase() : "";
+
+      const s = (nav + " " + nav2);
+      if (s.includes("zh-hant") || s.includes("zh-tw") || s.includes("zh-hk")) return "zh-Hant";
+      if (s.includes("zh")) return "zh-Hans";
+      return "en";
+    }
+
+    function t(key){
+      const lang = window.__lang || "zh-Hant";
+      return (I18N[lang] && I18N[lang][key] !== undefined) ? I18N[lang][key] : key;
+    }
+
+    function applyLang(lang){
+      window.__lang = lang;
+      localStorage.setItem("lang", lang);
+      document.documentElement.lang = lang;
+      document.title = t("title");
+
+      document.querySelectorAll("[data-i18n]").forEach(el=>{
+        const key = el.getAttribute("data-i18n");
+        el.textContent = t(key);
+      });
+
+      // notes list
+      const ul = document.getElementById("notesList");
+      ul.innerHTML = "";
+      const items = t("notes.items");
+      if (Array.isArray(items)){
+        items.forEach(txt=>{
+          const li = document.createElement("li");
+          li.textContent = txt;
+          ul.appendChild(li);
+        });
+      }
+
+      // subtitle uses pre-line; we already set via data-i18n
+      // dynamic outputs will be refreshed by calculate()
+    }
+
+    function formatTpl(str, vars){
+      return String(str).replace(/\{(\w+)\}/g, (_,k)=> (vars[k] ?? ""));
+    }
+
+    // ---------------------------
+    // calculator
+    // ---------------------------
     function num(id){ return parseFloat(document.getElementById(id).value); }
     function fmt(x, d=2){ return (isFinite(x) ? x.toFixed(d) : "—"); }
-
     function safeDiv(a,b){ return (b > 0 && isFinite(b)) ? (a/b) : NaN; }
 
     function calculate(){
@@ -181,24 +379,38 @@
 
       document.getElementById("dinfty").textContent = fmt(dInf, 2);
       document.getElementById("hinfty").textContent = fmt(hInf, 2);
-      document.getElementById("hpdShow").textContent = fmt(hpd, 1);
-
       document.getElementById("dber").textContent = fmt(dBer, 2);
       document.getElementById("hber").textContent = fmt(hBer, 2);
       document.getElementById("djah").textContent = fmt(dJah, 2);
       document.getElementById("hjah").textContent = fmt(hJah, 2);
 
-      document.getElementById("incomeLine").textContent =
-        `Ist/hour ≈ ${fmt(istPerHour, 3)}   |   Keys/hour ≈ ${fmt(keysPerHour, 3)}   (C+S+N)`;
+      document.getElementById("hoursLine").textContent =
+        formatTpl(t("tpl.hoursLine"), { H: fmt(hInf, 2), D: fmt(hpd, 1) });
 
-      // Disable nonsense display if inputs invalid
-      document.getElementById("calc").disabled = !(isFinite(istPerHour) && istPerHour > 0 && isFinite(hpd) && hpd > 0);
+      document.getElementById("incomeLine").textContent =
+        formatTpl(t("tpl.incomeLine"), { IPH: fmt(istPerHour, 3), KPH: fmt(keysPerHour, 3) });
+
+      // disable calculate button if invalid
+      document.getElementById("calc").disabled =
+        !(isFinite(istPerHour) && istPerHour > 0 && isFinite(hpd) && hpd > 0);
     }
+
+    // init
+    const langSel = document.getElementById("langSel");
+    const initialLang = detectLang();
+    langSel.value = initialLang;
+    applyLang(initialLang);
+
+    langSel.addEventListener("change", () => {
+      applyLang(langSel.value);
+      calculate();
+    });
 
     document.getElementById("calc").addEventListener("click", calculate);
     ["ber","jah","mal","hpd","tC","tS","tN"].forEach(id=>{
       document.getElementById(id).addEventListener("input", calculate);
     });
+
     calculate();
   </script>
 </body>
