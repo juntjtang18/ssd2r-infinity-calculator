@@ -1,112 +1,140 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-Hans">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Infinity Homework Calculator (D2R)</title>
+  <title>Infinity 作业计算器 (D2R)</title>
   <style>
     :root { --bg:#0b0d10; --card:#12161c; --text:#e7eef7; --muted:#9db0c6; --line:#223041; --accent:#7bdcff; }
     body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:var(--bg); color:var(--text); }
-    .wrap { max-width: 780px; margin: 0 auto; padding: 22px 16px 40px; }
+    .wrap { max-width: 860px; margin: 0 auto; padding: 22px 16px 40px; }
     h1 { margin: 6px 0 6px; font-size: 22px; }
-    .sub { color:var(--muted); margin: 0 0 16px; line-height: 1.45; }
+    .sub { color:var(--muted); margin: 0 0 16px; line-height: 1.55; }
     .grid { display:grid; grid-template-columns: 1fr; gap: 12px; }
-    @media (min-width: 720px){ .grid { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 820px){ .grid { grid-template-columns: 1fr 1fr; } }
     .card { background:var(--card); border:1px solid var(--line); border-radius: 14px; padding: 14px; }
     .card h2 { margin: 0 0 10px; font-size: 15px; color: var(--accent); font-weight: 650; }
     .row { display:flex; gap:10px; align-items:center; margin: 10px 0; }
     label { flex: 1; color:var(--muted); font-size: 13px; }
-    input { width: 120px; padding: 10px 10px; border-radius: 10px; border: 1px solid var(--line); background:#0f1318; color:var(--text); font-size: 14px; }
-    .btn { width: 100%; padding: 12px 14px; border: 0; border-radius: 12px; background: var(--accent); color:#05202a; font-weight: 750; cursor:pointer; }
-    .out { font-size: 26px; font-weight: 800; margin-top: 6px; }
-    .tiny { color:var(--muted); font-size: 12px; line-height: 1.45; }
+    input { width: 140px; padding: 10px 10px; border-radius: 10px; border: 1px solid var(--line); background:#0f1318; color:var(--text); font-size: 14px; }
+    .btn { width: 100%; padding: 12px 14px; border: 0; border-radius: 12px; background: var(--accent); color:#05202a; font-weight: 800; cursor:pointer; margin-top: 6px; }
+    .outBig { font-size: 34px; font-weight: 900; margin: 6px 0 2px; }
+    .tiny { color:var(--muted); font-size: 12px; line-height: 1.55; }
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
     .hr { height:1px; background:var(--line); margin: 10px 0; border:0; }
+    details { border: 1px solid var(--line); border-radius: 12px; padding: 10px 10px; background: #0f1318; }
+    summary { cursor: pointer; color: var(--text); font-weight: 650; list-style: none; }
+    summary::-webkit-details-marker { display:none; }
+    .summaryHint { color: var(--muted); font-weight: 500; margin-left: 8px; font-size: 12px; }
+    .pill { display:inline-block; padding: 2px 8px; border:1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: 12px; }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>Infinity Homework Calculator (D2R)</h1>
+    <h1>Infinity 作业计算器 (D2R)</h1>
     <p class="sub">
-      Fill only 5 numbers. Output is in <span class="mono">hours</span>. (Keys-only model + your key drop rates)<br/>
-      Assumptions baked in: TKey=1/14, HKey≈DK≈1/10.5, 1 key = 1/3 Ist, Mal≈0.5 Ist.
+      只填几个数字，直接给你<strong>多少天</strong>拿到 Infinity（按钥匙路线的模型）。<br/>
+      内置假设：TKey=1/14，HKey≈DKey≈1/10.5，1 key = 1/3 Ist，Mal≈0.5 Ist。
     </p>
 
     <div class="grid">
+      <!-- INPUTS -->
       <div class="card">
-        <h2>Inputs</h2>
+        <h2>输入</h2>
 
         <div class="row">
-          <label>Ber price (Ist)</label>
-          <input id="ber" type="number" step="0.1" value="20">
-        </div>
-
-        <div class="row">
-          <label>Jah price (Ist)</label>
-          <input id="jah" type="number" step="0.1" value="24">
+          <label>每天玩几小时 <span class="pill">hours/day</span></label>
+          <input id="hpd" type="number" step="0.5" value="4">
         </div>
 
         <hr class="hr"/>
 
         <div class="row">
-          <label>Countess time (min/run)</label>
+          <label>Countess 用时 <span class="pill">min/run</span></label>
           <input id="tC" type="number" step="0.1" value="2">
         </div>
 
         <div class="row">
-          <label>Summoner time (min/run)</label>
+          <label>Summoner 用时 <span class="pill">min/run</span></label>
           <input id="tS" type="number" step="0.1" value="2">
         </div>
 
         <div class="row">
-          <label>Nihlathak time (min/run)</label>
+          <label>Nihlathak 用时 <span class="pill">min/run</span></label>
           <input id="tN" type="number" step="0.1" value="2">
         </div>
 
-        <hr class="hr"/>
+        <details style="margin-top:12px;">
+          <summary>高级设置：符文价格 <span class="summaryHint">(默认收起，想改再点)</span></summary>
+          <div style="margin-top:10px;">
+            <div class="row">
+              <label>Ber 价格（Ist）</label>
+              <input id="ber" type="number" step="0.1" value="20">
+            </div>
+            <div class="row">
+              <label>Jah 价格（Ist）</label>
+              <input id="jah" type="number" step="0.1" value="24">
+            </div>
+            <div class="row">
+              <label>Mal 价格（Ist）</label>
+              <input id="mal" type="number" step="0.1" value="0.5">
+            </div>
+            <p class="tiny">说明：Infinity = 2×Ber + Mal + Ist（这里默认 Mal=0.5，可按你当前市场改）。</p>
+          </div>
+        </details>
 
-        <button class="btn" id="calc">Calculate</button>
+        <button class="btn" id="calc">计算</button>
+
         <p class="tiny">
-          Tip: Use your <b>sustainable</b> average time (e.g., 2.0). “Peak pace” (1.5) isn’t sustainable.
+          Tip：用<strong>可持续</strong>的平均速度（比如2.0）。冲刺速度（1.5）能做到但很难长期保持。
         </p>
       </div>
 
+      <!-- OUTPUTS -->
       <div class="card">
-        <h2>Outputs</h2>
+        <h2>结果（以“成品”为中心）</h2>
 
-        <div class="tiny">Estimated income</div>
-        <div class="out"><span id="iph">—</span> <span class="tiny">Ist/hour</span></div>
-        <div class="tiny mono" id="kph">—</div>
+        <div class="tiny">Infinity 预计需要</div>
+        <div class="outBig"><span id="dinfty">—</span> <span class="tiny">天</span></div>
+        <div class="tiny">≈ <span id="hinfty">—</span> 小时（按 <span id="hpdShow">—</span> 小时/天）</div>
 
         <hr class="hr"/>
 
-        <div class="tiny">Targets</div>
-        <div class="row">
-          <label>Infinity (2×Ber + Mal + Ist)</label>
-          <div class="mono" style="width:140px; text-align:right;"><span id="hinf">—</span> h</div>
-        </div>
+        <div class="tiny">参考（不抢主输出）</div>
+        <div class="tiny mono" id="incomeLine">—</div>
 
-        <div class="row">
-          <label>1 Ber</label>
-          <div class="mono" style="width:140px; text-align:right;"><span id="hber">—</span> h</div>
-        </div>
+        <details style="margin-top:12px;">
+          <summary>更多拆解（Ber / Jah）</summary>
+          <div style="margin-top:10px;">
+            <div class="row">
+              <label>1 Ber</label>
+              <div class="mono" style="width:180px; text-align:right;">
+                <span id="dber">—</span> 天
+                <span class="tiny">（≈<span id="hber">—</span>小时）</span>
+              </div>
+            </div>
+            <div class="row">
+              <label>1 Jah</label>
+              <div class="mono" style="width:180px; text-align:right;">
+                <span id="djah">—</span> 天
+                <span class="tiny">（≈<span id="hjah">—</span>小时）</span>
+              </div>
+            </div>
+          </div>
+        </details>
 
-        <div class="row">
-          <label>1 Jah</label>
-          <div class="mono" style="width:140px; text-align:right;"><span id="hjah">—</span> h</div>
-        </div>
-
-        <p class="tiny">
-          If you want a “days plan”: divide hours by your daily playtime (e.g., 4h/day).
+        <p class="tiny" style="margin-top:10px;">
+          你可以把这个当“作业计划”：每天完成多少小时，就稳稳推进。
         </p>
       </div>
 
+      <!-- NOTES -->
       <div class="card" style="grid-column: 1 / -1;">
-        <h2>Notes</h2>
+        <h2>备注</h2>
         <ul class="tiny">
-          <li>This is the <b>keys pipeline</b> plan. It’s designed to be simple and not scare viewers with run counts.</li>
-          <li>Drop-rate constants are your tested model: TKey=1/14, HKey≈DK≈1/10.5.</li>
-          <li>Market prices (Ber/Jah) are inputs. Infinity uses Mal≈0.5 Ist as a fixed constant; change it in code if your market differs.</li>
+          <li>这个工具刻意用<strong>天</strong>来表达，避免“跑多少把”吓跑人。</li>
+          <li>核心输入只有：Ber/Jah 价格 + 三段路平均用时 + 每天玩几小时。</li>
+          <li>模型是“钥匙路线”的计划工具：越稳定、越可持续越准。</li>
         </ul>
       </div>
     </div>
@@ -116,9 +144,14 @@
     function num(id){ return parseFloat(document.getElementById(id).value); }
     function fmt(x, d=2){ return (isFinite(x) ? x.toFixed(d) : "—"); }
 
+    function safeDiv(a,b){ return (b > 0 && isFinite(b)) ? (a/b) : NaN; }
+
     function calculate(){
       const ber = num("ber");
       const jah = num("jah");
+      const mal = num("mal");
+
+      const hpd = num("hpd");
       const tC = num("tC");
       const tS = num("tS");
       const tN = num("tN");
@@ -128,31 +161,42 @@
       const pH = 1/10.5;   // Summoner HKey per run
       const pD = 1/10.5;   // Nihl DKey per run
       const istPerKey = 1/3;
-      const malCostIst = 0.5;
 
-      const runsPerHourC = 60 / tC;
-      const runsPerHourS = 60 / tS;
-      const runsPerHourN = 60 / tN;
+      const runsPerHourC = safeDiv(60, tC);
+      const runsPerHourS = safeDiv(60, tS);
+      const runsPerHourN = safeDiv(60, tN);
 
       const keysPerHour = runsPerHourC*pT + runsPerHourS*pH + runsPerHourN*pD;
       const istPerHour = keysPerHour * istPerKey;
 
-      const costInfinity = 2*ber + malCostIst + 1; // 2 Ber + Mal + Ist
+      const costInfinity = 2*ber + mal + 1; // 2 Ber + Mal + Ist
 
-      const hInf = costInfinity / istPerHour;
-      const hBer = ber / istPerHour;
-      const hJah = jah / istPerHour;
+      const hInf = safeDiv(costInfinity, istPerHour);
+      const hBer = safeDiv(ber, istPerHour);
+      const hJah = safeDiv(jah, istPerHour);
 
-      document.getElementById("iph").textContent = fmt(istPerHour, 3);
-      document.getElementById("kph").textContent = `Keys/hour ≈ ${fmt(keysPerHour, 3)}  (from C+S+N)`;
+      const dInf = safeDiv(hInf, hpd);
+      const dBer = safeDiv(hBer, hpd);
+      const dJah = safeDiv(hJah, hpd);
 
-      document.getElementById("hinf").textContent = fmt(hInf, 2);
+      document.getElementById("dinfty").textContent = fmt(dInf, 2);
+      document.getElementById("hinfty").textContent = fmt(hInf, 2);
+      document.getElementById("hpdShow").textContent = fmt(hpd, 1);
+
+      document.getElementById("dber").textContent = fmt(dBer, 2);
       document.getElementById("hber").textContent = fmt(hBer, 2);
+      document.getElementById("djah").textContent = fmt(dJah, 2);
       document.getElementById("hjah").textContent = fmt(hJah, 2);
+
+      document.getElementById("incomeLine").textContent =
+        `Ist/hour ≈ ${fmt(istPerHour, 3)}   |   Keys/hour ≈ ${fmt(keysPerHour, 3)}   (C+S+N)`;
+
+      // Disable nonsense display if inputs invalid
+      document.getElementById("calc").disabled = !(isFinite(istPerHour) && istPerHour > 0 && isFinite(hpd) && hpd > 0);
     }
 
     document.getElementById("calc").addEventListener("click", calculate);
-    ["ber","jah","tC","tS","tN"].forEach(id=>{
+    ["ber","jah","mal","hpd","tC","tS","tN"].forEach(id=>{
       document.getElementById(id).addEventListener("input", calculate);
     });
     calculate();
